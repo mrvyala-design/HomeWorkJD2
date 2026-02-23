@@ -1,4 +1,4 @@
-package l2_reflection_robot.robot;
+package l2.robot;
 
 import java.util.Random;
 
