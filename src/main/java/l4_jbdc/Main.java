@@ -1,4 +1,4 @@
-package l4_jbds;
+package l4_jbdc;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -16,14 +16,35 @@ public class Main {
 
         try (Connection conn = DriverManager.getConnection(url, username, password)) {
             createPersons(conn);
+            selectPersons(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private static void selectPersons(Connection conn) throws SQLException {
+        String sql = "SELECT * FROM people.person WHERE person.age > 21 ORDER BY person.dateTimeCreate";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+
+                while (rs.next()) {
+                    for (int i = 1; i <= columnCount; i++) {
+                        String columnName = metaData.getColumnName(i);
+                        Object columnValue = rs.getObject(columnName);
+
+                        System.out.println(columnName + ": " + columnValue);
+                    }
+                    System.out.println("--------------------------------");
+                }
+            }
+        }
+    }
+
     private static void createPersons(Connection conn) throws SQLException {
         String sql = "INSERT INTO people.person (age, salary, passport, address, dateOfBirthday, dateTimeCreate, " +
-                "timeToLunch, letter) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "timeToLunch, letter) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
