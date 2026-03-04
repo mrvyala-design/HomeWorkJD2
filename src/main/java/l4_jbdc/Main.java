@@ -28,13 +28,17 @@ public class Main {
             try (ResultSet rs = ps.executeQuery()) {
                 ResultSetMetaData metaData = rs.getMetaData();
                 int columnCount = metaData.getColumnCount();
+                String tableName = metaData.getTableName(1);
+                System.out.println("Table Name: " + tableName);
+                System.out.println("======================================");
 
                 while (rs.next()) {
                     for (int i = 1; i <= columnCount; i++) {
                         String columnName = metaData.getColumnName(i);
+                        String columnTypeName = metaData.getColumnTypeName(i);
                         Object columnValue = rs.getObject(columnName);
 
-                        System.out.println(columnName + ": " + columnValue);
+                        System.out.println(columnName + "(" + columnTypeName + "): " + columnValue);
                     }
                     System.out.println("--------------------------------");
                 }
